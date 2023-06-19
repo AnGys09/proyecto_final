@@ -3,6 +3,11 @@
 #include <string.h>
 #include "garbage.h"
 
+int * id=0;
+int * referencias= 0;
+int size;
+char * nombre;
+
 //Declarar las variables del módulo
 // Cada bloque será una estructura con 4 datos: 
 typedef struct
