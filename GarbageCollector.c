@@ -3,12 +3,17 @@
 #include <string.h>
 #include "garbage.h"
 
-int * id=0;
-int * referencias= 0;
-int size;
-char * nombre;
-
 //Declarar las variables del módulo
+int * id=0;
+int * count_reference= 0;
+int size;
+char * name;
+
+int * max_memory=NULL;
+int available;
+int in_use;
+int *block;
+
 // Cada bloque será una estructura con 4 datos: 
 typedef struct
 {
@@ -31,11 +36,20 @@ typedef struct
 int init_gc(int max_mem)
 {
 	//TODO : reserva la memoria del tamaño que tiene max_mem
-	void* init_gc = malloc(sizeof(max_mem));
-	if(init_gc == NULL){
-		printf("Error: La memoria está llena");
-	} 
-	return init_gc;
+	int response; // será el valor de respuesta en el return: si es OK retorna 0, y si es ERROR, -1
+	void * init_gc = malloc(max_mem * sizeof(int)); 
+
+	//Si hay espacio o no, se devolverá lo que se asigne a response.
+	if (init_gc == NULL){
+		printf("No se puede asignar memoria. \n");
+		response = -1;
+	} else {
+		init_gc = NULL;
+		response=0;
+	}
+	
+	max_memory= max_mem; // se asigna el valor a la variable global para ser utilizada en otras funciones.
+	return response;
 	
 }
 
