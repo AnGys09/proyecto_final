@@ -31,7 +31,8 @@ int main(){
 	init(mem);
 	int sz=5;
 	//char * nombrecito = "bloque A";
-	new_block(sz, "bloque A"); 
+	int block1= new_block(sz, "bloque A"); 
+	resize(1,400);
 }
 int init(int maxmem){
 	i = 0;
@@ -60,7 +61,6 @@ int new_block(int size,char* name){
     printf("El valor de name es: %s\n", name);
     printf("i vale %d\n", i);
 
-    int id_return=0;
     block = (int**)malloc(sizeof(int*));
     nombre[i] = (char*)malloc(sizeof(char) * (strlen(name) + 1));
 
@@ -86,19 +86,47 @@ int new_block(int size,char* name){
 
     *memoriatotal -= size;
     printf("memoria ahora no es 1000, es %d\n", *memoriatotal);
+	
     i++;
-    id_return = *identificador[i];
-    printf("id para return es %d\n", id_return);
+  
 
-    return id_return;
+    return i;
 }
 int resize(int block, int sz){
-	printf("id del bloque: %d",block);
-	printf("size para reasignar: %d",sz);
+	printf("id del bloque: %d\n",block);
+	printf("size para reasignar: %d\n",sz);
+	printf("memoria total es %d\n", *memoriatotal);
 
 	if(sz < *memoriatotal){
+		int position = -1;  // Inicializamos la posición como -1 para indicar que no se encontró ninguna coincidencia
+
+		for (int j = 0; j < sizeof(**identificador); j++) {
+			if (*identificador[j] == block) {
+				position = j;
+				break;  // Se encontró la coincidencia, se sale del bucle
+			}
+		}
+	
+		printf("La posición coincidente es: %d\n", position);
+		int aux_tamanio= *tamanio[position];
+		int* punteroPrueba = (int *) realloc(tamanio[position],sz);
+		
+		if(punteroPrueba==NULL){
+			return ERROR;
+		} else {
+			*tamanio[position]=sz;
+			*memoriatotal= (*memoriatotal+aux_tamanio)-(*tamanio[position]);
+			printf("tamaño ahora es: %d\n",*tamanio[position]);
+			printf("memoria total es %d\n", *memoriatotal);
+			return OK;
+		}
 
 	}
 }
-
+int cur_used_memory(void){
+	return memoriaenuso;
+}
+// mem total = 1000;
+// mem en uso = mem total - rezise || mem total - bloque nuevo
+// mem restante = mem total - mem en uso
 
