@@ -5,10 +5,10 @@
 #define ERROR   (-1)
 
 // estructura de la memoria: 
-int * memoriatotal = NULL;
-void * memoriaenuso = NULL;
-void * memoriarestante = NULL;
-void * cantidad_bloques = NULL;
+int * memoriatotal = NULL; // acá va la memoria total que pide el usuario
+int * memoriaenuso = NULL; // memoria que se está utilizando
+int * memoriarestante = NULL; //  memoria disponible para utilizar
+int cantidad_bloques; //
 
 // estructura de los bloques: 
 int ** block= NULL; 
@@ -24,6 +24,13 @@ int max_mem;
 int init(int maxmem);
 int new_block(int size,char* name);
 int resize(int block, int sz);
+//Se agrega una referencia a un bloque de memoria existente.
+int add_reference(int block);
+//Se elimina una referencia a un bloque de memoria.
+int remove_reference(int block);
+int cur_used_memory(void);
+int cur_available_memory(void);
+
 
 int main(){
 	int mem= 1000;
@@ -33,17 +40,27 @@ int main(){
 	//char * nombrecito = "bloque A";
 	int block1= new_block(sz, "bloque A"); 
 	resize(1,400);
+	int used_mem = cur_used_memory();
+	printf("Used memory: %d\n", used_mem);
+	// Prueba de available_memory
+	int available_mem = cur_available_memory();
+	printf("Available memory: %d\n", available_mem);
+	return 0;
 }
 int init(int maxmem){
 	i = 0;
-	//memoriatotal = malloc(maxmem);
-	printf("memoria sz: %lld\n",sizeof(memoriatotal)); // dirección de memoria
 
 	// se inicializan las variables dandoles memoria a cada una
 	identificador = (int *)malloc(sizeof(int));
 	cont_referencias =(int *)malloc(sizeof(int));
 	tamanio = (int *)malloc(sizeof(int));
 	nombre = (char**)malloc(sizeof(char*));
+	memoriaenuso=(int *)malloc(sizeof(int));
+	*memoriaenuso=0;
+	memoriarestante=(int *)malloc(sizeof(int));
+
+	// se inicializa la variable para contabilizar bloques
+	cantidad_bloques =0;
 	
 	max_mem= maxmem; // vale 1000, puedo hacer las restas
 	memoriatotal=&max_mem;
@@ -81,11 +98,17 @@ int new_block(int size,char* name){
             printf("El contador de referencias está iniciado en %d\n", *cont_referencias[i]);
             *tamanio[i] = size;
             printf("El tamaño es %d\n", *tamanio[i]);
+			cantidad_bloques+=1;
+			printf("cantidad de bloques: %d\n",cantidad_bloques);
         }
     }
-
-    *memoriatotal -= size;
-    printf("memoria ahora no es 1000, es %d\n", *memoriatotal);
+	
+	printf("memoria en uso: %d\n",*memoriaenuso);
+   	*memoriarestante= *memoriatotal - size;
+	*memoriaenuso= (*memoriaenuso) + size;
+	printf("memoria en uso: %d\n",*memoriaenuso);
+	printf("memoria restante: %d\n",*memoriarestante);
+    printf("memoria sigue siendo %d\n", *memoriatotal);
 	
     i++;
   
@@ -109,24 +132,55 @@ int resize(int block, int sz){
 	
 		printf("La posición coincidente es: %d\n", position);
 		int aux_tamanio= *tamanio[position];
-		int* punteroPrueba = (int *) realloc(tamanio[position],sz);
+		int* nuevo_tamanio = (int *) realloc(tamanio[position],sz);
 		
-		if(punteroPrueba==NULL){
+		if(nuevo_tamanio==NULL){
 			return ERROR;
 		} else {
 			*tamanio[position]=sz;
-			*memoriatotal= (*memoriatotal+aux_tamanio)-(*tamanio[position]);
+			//memoria en uso: 5
+			//memoria restante: 995
+			*memoriarestante= (*memoriarestante+aux_tamanio)-(*tamanio[position]);
+			*memoriaenuso=(*memoriaenuso-aux_tamanio)+(*tamanio[position]);
 			printf("tamaño ahora es: %d\n",*tamanio[position]);
-			printf("memoria total es %d\n", *memoriatotal);
+			printf("memoria en uso: %d\n",*memoriaenuso);
+			printf("memoria restante: %d\n",*memoriarestante);
+    		printf("memoria sigue siendo %d\n", *memoriatotal);
+			
 			return OK;
 		}
 
 	}
 }
+//Se agrega una referencia a un bloque de memoria existente.
+int add_reference(int block){
+	int position = -1;  // Inicializamos la posición como -1 para indicar que no se encontró ninguna coincidencia
+
+	for (int j = 0; j < sizeof(**identificador); j++) {
+		if (*identificador[j] == block) {
+			position = j;
+			break;	// Se encontró la coincidencia, se sale del bucle
+		}
+	}
+	
+	return 0;
+}
+
+//Se elimina una referencia a un bloque de memoria.
+int remove_reference(int block){
+	return 0;
+}
 int cur_used_memory(void){
-	return memoriaenuso;
+	printf("memoria en uso: %d\n",*memoriaenuso);
+	return *memoriaenuso;
 }
 // mem total = 1000;
 // mem en uso = mem total - rezise || mem total - bloque nuevo
 // mem restante = mem total - mem en uso
-
+int cur_available_memory(void){
+	printf("memoria restante: %d\n",*memoriarestante);
+	return *memoriarestante;
+}
+int destroy_agent(){
+	// recorrer el array de bloques y liberar aquellos que están en 0 o null 
+}
