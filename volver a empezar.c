@@ -182,5 +182,17 @@ int cur_available_memory(void){
 	return *memoriarestante;
 }
 int destroy_agent(){
+	free(identificador);
+	free(cont_referencias);
+	free(tamanio);
+	free(nombre);
+	free(memoriaenuso);
+	free(memoriarestante);
+	free(block);
+   	free(nombre[i]);
+	free(*block);
+    free(*identificador);
+    free(*cont_referencias);
+    free(*tamanio);
 	// recorrer el array de bloques y liberar aquellos que están en 0 o null 
 }
