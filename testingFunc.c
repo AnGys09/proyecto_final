@@ -4,9 +4,9 @@
 #include "garbage.h"
 #include <time.h>
 int block=0; // Cantidad de bloques
-int id[]; // array, donde se van a guardar los id de los bloques
-int * count_reference= 0;
-int size;
+int ** id; // array, donde se van a guardar los id de los bloques
+int ** count_reference;
+int ** size;
 char * block_name;
 
 int * max_memory=NULL;
@@ -28,30 +28,50 @@ int main(){
 
 int init(int maxmem){
 	int response; 
-	void * punterogenerico = malloc(maxmem * sizeof(int)); 
+	void * punterogenerico = malloc(maxmem * sizeof(int));  // devuelve la direccón de memoria de donde comienza el bloque
 	if (punterogenerico == NULL){
 		response = -1;
-	} else {
-		punterogenerico = NULL;
-		response=0;
-	}
-	max_memory= maxmem; // mide 1000 y con ello puedo hacer las restas.
+	} 
+	max_memory= &punterogenerico; // mide 1000 y con ello puedo hacer las restas.
+	printf("max memory mide: %n\n",&max_memory); // 1000
 	return response;
 }
 
 int new_block(int sz,char* name){
 	int response;
 	// -- debug --
-	printf("max memory mide: %d\n",max_memory);
-	printf("global id es: %d\n",id[bloquesTotalesCreados]);
-	printf("hay %d bloques\n",block);
-	printf("size es: %d\n y char es: %s\n",sz, name);
+	printf("hay %d bloques\n",block); // 0
+	printf("size nuevo es: %d\n y char es: %s\n",sz, name); // 5 y bloque A
+	printf("size global es: %n\n",size);
 	// -----------------------
+	// al bloque debo asignarle la dirección de memoria de max_memory si es el primero y sino correrme hasta el lugar siguiente al size
+	// hay que usar un doble puntero, es decir, puntero a puntero
+	int block_size = max_memory - (block * sizeof(int) + block * sizeof(char) + block * sizeof(int));
+	void *block_memory = (char *)max_memory - block_size; 
 
-	if(size+sz <= max_memory){ // si la variable global SIZE + el length del nuevo bloque son menor o igual al total de memoria
+	*id = (int *)(max_memory - sizeof(int));
+	*count_reference = (int *)(max_memory - sizeof(int) * 2);
+	*size = (int *)(max_memory - sizeof(int) * 3);
+	**id = block + 1; // Incrementa el ID del bloque
+	strcpy(block_name, name); // Asigna un nombre al bloque
+	**size = sz; // Asigna un tamaño al bloque (menor a 1000)
+
+	printf("DEBUG NUEVOS---\n ");
+	printf("block size: %d\n block memory: %n\n",block_size, block_memory);
+	printf("id: %n; name: %s; size: %n;\n",id, name, size);
+	printf("los punteros: id = %n; block name = %s, size puntero = %n",*id, block_name, *size);
+
+	
+
+    return 0;
+
+
+
+	//printf("global id es: %d\n",id[bloquesTotalesCreados]);
+	/* if(size+sz <= max_memory){ // si la variable global SIZE + el length del nuevo bloque son menor o igual al total de memoria
 		// armo el bloque
-		printf("es mas chico\n");
-		// id [0] = 0 +1 
+		
+		
 		id[bloquesTotalesCreados]= bloquesTotalesCreados+1;
 
 		bloquesTotalesCreados= bloquesTotalesCreados+1;
@@ -66,6 +86,6 @@ int new_block(int sz,char* name){
 	}
 	//block= &cant_bloques;
 	printf("El bloque es: block= %d, con tamaño %d, con id %d, y el nombre del bloque es %s\n",block,size,id,block_name);
-	return response; 
+	return response;  */
 
 }

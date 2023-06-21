@@ -2,7 +2,7 @@
 //El sistema implementado deberá ejecutar el siguiente caso de prueba.
 #include <stdio.h>
 #include <string.h>
-#include “garbage.h”
+#include "garbage.h"
 
 int main() {
 int max_mem = 1000;

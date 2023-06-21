@@ -57,8 +57,10 @@ int new_block(int sz,char* name)
 {
     //TODO: recibe el size de la memoria que necesita y el nombre del bloque, esa es la referencia?
 
-	// ESta funcion es para inicializar un bloque. Esta función retorna un Integer. La idea es que cuando pueda incializarlo, debido a que la memoria que necestia el bloque
-	// es menor a la memoria total, en ese caso vos retornes un Integer que sea un identificador del bloque. Y si no se puede inicializar, en ese caso tenes que devolver un identificador
+	// ESta funcion es para inicializar un bloque. 
+	//Esta función retorna un Integer. La idea es que cuando pueda incializarlo, debido a que la memoria que necestia el bloque
+	// es menor a la memoria total, en ese caso vos retornes un Integer que sea un identificador del bloque. 
+	//Y si no se puede inicializar, en ese caso tenes que devolver un identificador
 	// inválido ( acá podes definir vos qué número va a corresponder a un ID invalido, por ejemplo, podría ser 0 o -1 , sería lo más común)
 	int block; //puede ser un puntero a la memoria y que el identificador sea la dirección de momoria;
 
