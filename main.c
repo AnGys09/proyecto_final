@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include “garbage.h”
+#include "garbage.h"
 
 int main() {
 	int max_mem = 1000;
@@ -30,11 +30,11 @@ int main() {
 	remove_reference(block2); // Quitar una referencia más al mismo bloque
 
 	// Prueba de used_memory
-	int used_mem = used_memory();
+	int used_mem = cur_used_memory();
 	printf("Used memory: %d\n", used_mem);
 
 	// Prueba de available_memory
-	int available_mem = available_memory();
+	int available_mem = cur_available_memory();
 	printf("Available memory: %d\n", available_mem);
 
 	// Prueba de destroy_agent
